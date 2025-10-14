@@ -4,20 +4,6 @@ def get_dimensionality(points):
     return len(points[0])
 
 
-def is_dominated(point1, point2):
-    dim = len(point1)
-    if dim != len(point2):
-        raise ValueError("Points must have same dimensionality")
-
-    at_least_one_better = False
-    for i in range(dim):
-        if point1[i] < point2[i]:
-            return False
-        elif point2[i] < point1[i]:
-            at_least_one_better = True
-    return at_least_one_better
-
-
 def naive_no_filter(points):
     dim = get_dimensionality(points)
     if dim == 0:
@@ -50,47 +36,10 @@ def naive_with_filter(points):
             filtered_points.append(p)
     return filtered_points
 
-
-def merge_fronts(left, right):
-    merged = []
-    for point in left:
-        dominated = False
-        for other in right:
-            if all(o <= p for o, p in zip(other, point)) and any(o < p for o, p in zip(other, point)):
-                dominated = True
-                break
-        if not dominated:
-            merged.append(point)
-
-    for point in right:
-        dominated = False
-        for other in merged:
-            if all(o <= p for o, p in zip(other, point)) and any(o < p for o, p in zip(other, point)):
-                dominated = True
-                break
-        if not dominated:
-            merged.append(point)
-
-    return merged
-
-
-def divide_and_conquer(points):
-    if len(points) <= 1:
-        return points
-
-    mid = len(points) // 2
-    sorted_points = sorted(points, key=lambda x: x[0])
-
-    left = divide_and_conquer(sorted_points[:mid])
-    right = divide_and_conquer(sorted_points[mid:])
-
-    return merge_fronts(left, right)
-
-
 def find_ideal_point(points):
     if not points:
         return None
-    dim = len(points[0])
+    dim = get_dimensionality(points)
     ideal_point = []
     for d in range(dim):
         ideal_point.append(min(point[d] for point in points))
@@ -113,7 +62,7 @@ def ideal_point_algorithm(points):
     for point, _ in sorted_points:
         dominated = False
         for p in pareto_front:
-            if all(x <= y for x, y in zip(p, point)) and any(x < y for x, y in zip(p, point)):
+            if all(x <= y for x, y in zip(p, point)):
                 dominated = True
                 break
         if not dominated:
@@ -135,8 +84,6 @@ if __name__ == "__main__":
     print(naive_no_filter(X_2D))
     print("\nNaive with filter 2D:")
     print(naive_with_filter(X_2D))
-    print("\nDivide and conquer 2D:")
-    print(divide_and_conquer(X_2D))
     print("\nIdeal point algorithm 2D:")
     print(ideal_point_algorithm(X_2D))
     print("Ideal point:", find_ideal_point(X_2D))
@@ -147,8 +94,6 @@ if __name__ == "__main__":
     print(naive_no_filter(X_3D))
     print("\nNaive with filter 3D:")
     print(naive_with_filter(X_3D))
-    print("\nDivide and conquer 3D:")
-    print(divide_and_conquer(X_3D))
     print("\nIdeal point algorithm 3D:")
     print(ideal_point_algorithm(X_3D))
     print("Ideal point:", find_ideal_point(X_3D))
@@ -159,8 +104,6 @@ if __name__ == "__main__":
     print(naive_no_filter(X_4D))
     print("\nNaive with filter 4D:")
     print(naive_with_filter(X_4D))
-    print("\nDivide and conquer 4D:")
-    print(divide_and_conquer(X_4D))
     print("\nIdeal point algorithm 4D:")
     print(ideal_point_algorithm(X_4D))
     print("Ideal point:", find_ideal_point(X_4D))
