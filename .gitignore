@@ -186,4 +186,18 @@ cython_debug/
 *.iml
 *.iws
 *.ipr
-.idea_modules/" > .gitignore
+.idea_modules/
+
+# Pliki graficzne
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.svg
+*.ico
+*.webp
+
+# Pliki CSV
+*.csv
